@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "rev-1-TBM-63105r_High_Res_JPEG.jpeg",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
