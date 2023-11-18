@@ -24,7 +24,7 @@ class AuthService {
     }
     
     @MainActor
-    func login(email : String, password : String) async throws {
+    func login(withEmail email : String, password : String) async throws {
         do {
             let result = try await Auth.auth().signIn(withEmail: email, password: password)
             self.userSession = result.user
@@ -47,10 +47,10 @@ class AuthService {
     
     @MainActor
     func loadUserData() async throws {
-        guard let currentUid = userSession?.uid else { return }
         self.userSession = Auth.auth().currentUser
-        let snapshot = try  await Firestore.firestore().collection("users").document(currentUid).getDocument()
-        self.currentUser =  try? snapshot.data(as: User.self)
+        guard let currentUid = userSession?.uid else { return }
+        let snapshot = try await Firestore.firestore().collection("users").document(currentUid).getDocument()
+        self.currentUser = try? snapshot.data(as: User.self)
     }
     
     func signOut() {
@@ -61,9 +61,7 @@ class AuthService {
     private func uploadUserData(uid: String, email : String, username : String) async {
         let user = User(id: uid, email: email, username: username)
         self.currentUser = user
-        guard let encodedUser =  try? Firestore.Encoder().encode(user) else {
-            return
-        }
+        guard let encodedUser =  try? Firestore.Encoder().encode(user) else {   return }
         try? await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
     }
 }
