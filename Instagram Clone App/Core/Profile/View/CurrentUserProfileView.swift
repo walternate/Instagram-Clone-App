@@ -17,44 +17,7 @@ struct CurrentUserProfileView: View {
             ScrollView {
                 //header
                 VStack(spacing: 10) {
-                    HStack {
-                        //pic and stats
-                        Image("blackpanther")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 80, height: 80)
-                            .clipShape(Circle())
-                        Spacer()
-                        HStack(spacing: 8) {
-                            UserStatView(value: 3, title: "Posts")
-                            UserStatView(value: 4, title: "Followers")
-                            UserStatView(value: 5, title: "Following")
-                        }
-                    }
-                    .padding(.horizontal, 30)
-                    //name and bio
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(user.username)
-                            .font(.footnote)
-                            .fontWeight(.semibold)
-                        Text("Wakanda Forever!")
-                            .font(.footnote)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 30)
-                    
-                    //action button
-                    Button {
-                        
-                    } label: {
-                        Text("Edit Profile")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .frame(width: 340, height: 32)
-                            .foregroundColor(.black)
-                            .overlay(RoundedRectangle(cornerRadius: 6).stroke(Color.gray, lineWidth: 1))
-                    }
-                    Divider()
+                    ProfileHeaderView(user: user)
                 }
                 //post grid view
                 PostGridView(posts: posts)

@@ -19,7 +19,6 @@ struct ContentView: View {
             } else if let currentUser = viewModel.currentUser {
                 MainTabView(user: currentUser)
             }
-            
         }
     }
 }
