@@ -9,7 +9,18 @@ import SwiftUI
 import Kingfisher
 
 struct FeedCell: View {
-    let post : Post
+    @ObservedObject var viewModel : FeedCellViewModel
+    @State private var showComments = false
+    private var post : Post {
+        return viewModel.post
+    }
+    init(post: Post) {
+        self.viewModel = FeedCellViewModel(post: post)
+    }
+    
+    private var didLike : Bool {
+        return post.didLike ?? false
+    }
     var body: some View {
         VStack {
             //image + plus username
@@ -33,21 +44,22 @@ struct FeedCell: View {
             //action buttons
             HStack(spacing: 16) {
                 Button {
-                    print("like")
+                    handleLikeTapped()
                 } label: {
-                    Image(systemName: "heart")
+                    Image(systemName: didLike ? "heart.fill" : "heart")
                         .imageScale(.large)
+                        .foregroundStyle(didLike ? .red : .black)
                 }
                 Button {
-                    print("comment")
-
+                    showComments.toggle()
+                    
                 } label: {
                     Image(systemName: "bubble.right")
                         .imageScale(.large)
                 }
                 Button {
                     print("share")
-
+                    
                 } label: {
                     Image(systemName: "paperplane")
                         .imageScale(.large)
@@ -59,12 +71,14 @@ struct FeedCell: View {
             .padding(.top, 4)
             
             //likes label
-            Text("\(post.likes) likes")
-                .font(.footnote)
-                .fontWeight(.semibold)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.leading, 10)
-                .padding(.top, 1)
+            if post.likes > 0 {
+                Text("\(post.likes) likes")
+                    .font(.footnote)
+                    .fontWeight(.semibold)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.leading, 10)
+                    .padding(.top, 1)
+            }
             //caption label
             HStack {
                 Text("\(post.user?.username ?? "") ").fontWeight(.semibold) +
@@ -81,6 +95,19 @@ struct FeedCell: View {
                 .padding(.leading, 10)
                 .padding(.top, 1)
                 .foregroundStyle(.gray)
+        }
+        .sheet(isPresented: $showComments) {
+            CommentsView(post: post)
+                .presentationDragIndicator(.visible)
+        }
+    }
+    private func handleLikeTapped() {
+        Task {
+            if didLike {
+                try await viewModel.unlike()
+            } else {
+                try await viewModel.like()
+            }
         }
     }
 }
