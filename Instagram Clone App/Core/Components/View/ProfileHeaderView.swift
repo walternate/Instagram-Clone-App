@@ -30,7 +30,7 @@ struct ProfileHeaderView: View {
         if user.isCurrentUser || isFollowed {
             return .white
         } else {
-            return .blue
+            return Color(.systemBlue)
         }
     }
     private var buttonForegroundColor : Color {
