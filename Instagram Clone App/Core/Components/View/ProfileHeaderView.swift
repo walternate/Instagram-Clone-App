@@ -54,9 +54,9 @@ struct ProfileHeaderView: View {
                 CircularProfileImageView(user: user, size: .large)
                 Spacer()
                 HStack(spacing: 8) {
-                    UserStatView(value: 3, title: "Posts")
-                    UserStatView(value: 4, title: "Followers")
-                    UserStatView(value: 5, title: "Following")
+                    UserStatView(value: user.stats?.postsCount ?? 0, title: "Posts")
+                    UserStatView(value: user.stats?.followersCount ?? 0, title: "Followers")
+                    UserStatView(value: user.stats?.followingCount ?? 0, title: "Following")
                 }
             }
             .padding(.horizontal, 30)

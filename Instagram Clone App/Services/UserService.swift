@@ -31,6 +31,8 @@ class UserService {
     }
 }
 
+// Following Part
+
 extension UserService {
     static func follow(uid : String) async throws {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
@@ -67,6 +69,42 @@ extension UserService {
     }
     
     static func checkIfUserFollowed(uid : String) async throws -> Bool {
-        return false
+        guard let currentUid = Auth.auth().currentUser?.uid else { return false }
+        let snapshot = try await FirebaseConstants
+            .FollowingCollection
+            .document(currentUid)
+            .collection("user-following")
+            .document(uid)
+            .getDocument()
+        return snapshot.exists
+    }
+}
+
+// Stats Part
+extension UserService {
+    static func fetchUserStat(uid : String) async throws -> UserStats {
+        async let followingSnapshot = try await FirebaseConstants
+            .FollowingCollection
+            .document(uid)
+            .collection("user-following")
+            .getDocuments()
+        let followingCount = try await followingSnapshot.count
+        
+        async let followersSnapshot = try await FirebaseConstants
+            .FollowersCollection
+            .document(uid)
+            .collection("user-followers")
+            .getDocuments()
+        let followersCount = try await followersSnapshot.count
+        
+        async let postsSnapshot = try await FirebaseConstants
+            .Posts
+            .whereField("ownerUid", isEqualTo: uid)
+            .getDocuments()
+        let postsCount = try await postsSnapshot.count
+        
+        print("Debug stats called...")
+        
+        return .init(followingCount: followingCount, followersCount: followersCount, postsCount: postsCount)
     }
 }

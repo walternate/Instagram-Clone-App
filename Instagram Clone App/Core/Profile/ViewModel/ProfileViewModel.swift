@@ -7,10 +7,18 @@
 
 import Foundation
 
+@MainActor
 class ProfileViewModel : ObservableObject {
     @Published var user : User
     init(user: User) {
         self.user = user
+        checkIfUserIsFollowed()
+        fetchUserStats()
+    }
+    func fetchUserStats() {
+        Task {
+            self.user.stats = try await UserService.fetchUserStat(uid: user.id)
+        }
     }
 }
 
@@ -31,6 +39,6 @@ extension ProfileViewModel {
     }
     
     func checkIfUserIsFollowed() {
-        
+        Task { self.user.isFollowed = try await UserService.checkIfUserFollowed(uid: user.id )}
     }
 }
